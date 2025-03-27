@@ -8,6 +8,8 @@ import Foundation
 class NetworkManager {
     static let shared = NetworkManager()
     let baseUrl = "https://api.open-meteo.com/v1"
+    let autocompleteBaseUrl = "https://api.locationiq.com/v1/"
+    let autocompleteToken = "pk.2b70389e06988dd76200f790facbca1b"
     
     private init() {}
     
@@ -109,6 +111,36 @@ class NetworkManager {
     
     
     
+    func getAutocompleteResult(query:String, completed:@escaping (AutocompleteDto?, String?) -> Void){
+      
+        let endPoint = autocompleteBaseUrl + "/autocomplete?tag=place:city,place:town?q=\(query)&limit=10&key=\(autocompleteToken)"
+        guard let url = URL(string: endPoint) else {
+            completed(nil, "Invalid request. Please try again")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: <#T##URLRequest#>) {  (data, response, error) in
+            if let _ = error { completed(nil, "error")
+                return
+            }
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completed(nil, "")
+                return
+            }
+            guard let data = data else {
+                completed(nil, "")
+                return
+            }
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let currentWeather = try decoder.decode(AutocompleteDto.self, from: data)
+                completed(currentWeather, nil)
+            } catch {
+                completed(nil, "")
+            }
+        }
+        task.resume()
+    }
     
     
 }
