@@ -41,4 +41,74 @@ class NetworkManager {
         }
         task.resume()
     }
+    
+    
+    func getDailyWeatherData(latitude: Double, longitude: Double, completed:@escaping (WeatherDailyDto?, String?) -> Void)
+    {
+        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto& daily=weather_code,temperature_2m_max,temperature_2m_min,wind_direction_10m_dominant,sunrise,sunset"
+        guard let url = URL(string: endPoint) else {
+            completed(nil, "Invalid request. Please try again")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: <#T##URLRequest#>) {  (data, response, error) in
+            if let _ = error { completed(nil, "error")
+                return
+            }
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completed(nil, "")
+                return
+            }
+            guard let data = data else {
+                completed(nil, "")
+                return
+            }
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let currentWeather = try decoder.decode(WeatherDailyDto.self, from: data)
+                completed(currentWeather, nil)
+            } catch {
+                completed(nil, "")
+            }
+        }
+        task.resume()
+    }
+    
+    
+    func getHourlyWeatherData(latitude: Double, longitude: Double, completed:@escaping (WeatherHourlyDto?, String?) -> Void)
+    {
+        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto& daily=temperature_2m,weather_code,wind_speed_10m"
+        guard let url = URL(string: endPoint) else {
+            completed(nil, "Invalid request. Please try again")
+            return
+        }
+        let task = URLSession.shared.dataTask(with: <#T##URLRequest#>) {  (data, response, error) in
+            if let _ = error { completed(nil, "error")
+                return
+            }
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completed(nil, "")
+                return
+            }
+            guard let data = data else {
+                completed(nil, "")
+                return
+            }
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let currentWeather = try decoder.decode(WeatherHourlyDto.self, from: data)
+                completed(currentWeather, nil)
+            } catch {
+                completed(nil, "")
+            }
+        }
+        task.resume()
+    }
+    
+    
+    
+    
+    
+    
 }
