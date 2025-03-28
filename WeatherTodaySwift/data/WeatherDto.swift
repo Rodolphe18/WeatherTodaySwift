@@ -9,17 +9,17 @@ import Foundation
 
 
 struct WeatherHourlyDto:Codable {
-    var utcOffSetSeconds: Int
+    var utc_offset_seconds: Int
     var hourly: HourlyForecastDataDto
 }
 
 struct WeatherCurrentDto:Codable {
-    var utcOffSetSeconds: Int
+    var utc_offset_seconds: Int
     var current: WeatherCurrentDataDto
 }
 
 struct WeatherDailyDto:Codable {
-    var utcOffSetSeconds: Int
+    var utc_offset_seconds: Int
     var daily: DailyCurrentDataDto
 }
 
@@ -31,12 +31,12 @@ struct HourlyForecastDataDto:Codable {
 }
 
 struct WeatherCurrentDataDto:Codable {
-    var temperature2m : Double
-    var weatherCode : Int
-    var windSpeed10m : Double
-    var windDirection10m : Int
-    var isDay:Int
-    var apparentTemperature:Double
+    var temperature_2m : Double
+    var weather_code : Int
+    var wind_speed_10m : Double
+    var wind_direction_10m : Int
+    var is_day:Int
+    var apparent_temperature:Double
     var precipitation:Double
 }
 

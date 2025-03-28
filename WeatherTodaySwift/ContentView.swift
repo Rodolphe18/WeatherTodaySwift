@@ -6,23 +6,28 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
+    
+    @StateObject private var homeViewModel = HomeViewModel()
+    
     var body: some View {
-        ZStack{
-            Color(.blue).edgesIgnoringSafeArea(.all)
-            VStack {
-                        Image(systemName: "globe")
-                            .imageScale(.large)
-                            .foregroundStyle(.tint)
-                        Text("Hello, world!")
-                    }
-                    .padding()
+        VStack {
+            Text(String(homeViewModel.currentWeather?.current.apparent_temperature ?? 0.00))
+            Text(String(homeViewModel.currentWeather?.current.temperature_2m ?? 0.00))
+            Text(String(homeViewModel.currentWeather?.current.wind_speed_10m ?? 0.00))
+            Text(String(homeViewModel.currentWeather?.current.precipitation ?? 0))
+        }.task {
+            do {
+                try await homeViewModel.getCurrentWeather()
+            
+            } catch{
+                
+            }
         }
         
     }
 }
 
-#Preview {
-    ContentView()
-}
+
