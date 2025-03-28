@@ -10,6 +10,8 @@ import Foundation
 final class HomeViewModel : ObservableObject {
     
     @Published var currentWeather: WeatherCurrentDto?=nil
+    @Published var hourlyWeather: WeatherHourlyDto?=nil
+    @Published var dailyWeather: WeatherDailyDto?=nil
     @Published var isLoading = false
     @Published var isError = false
     
@@ -29,5 +31,42 @@ final class HomeViewModel : ObservableObject {
             isLoading = false
         }
     
+    
+    func getDailyWeather() async throws {
+        
+            isLoading = true
+            
+            do {
+                dailyWeather = try await NetworkManager.shared.getDailyWeatherData(latitude: 48.866667, longitude:2.333333)
+            } catch {
+                isError = true
+                throw WeatherApiError.invalidRequest
+            }
+            
+            
+            isLoading = false
+        }
+    
+    func getHourlyWeather() async throws {
+        
+            isLoading = true
+            
+            do {
+                hourlyWeather = try await NetworkManager.shared.getHourlyWeatherData(latitude: 48.866667, longitude:2.333333)
+            } catch {
+                isError = true
+                throw WeatherApiError.invalidRequest
+            }
+            
+            
+            isLoading = false
+        }
+    
+    
 }
+
+
+
+
+
 

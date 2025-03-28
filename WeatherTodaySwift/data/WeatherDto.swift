@@ -25,9 +25,9 @@ struct WeatherDailyDto:Codable {
 
 struct HourlyForecastDataDto:Codable {
     var time: Array<String>
-    var temperature2m: Array<Double>
-    var windSpeed10m: Array<Double>
-    var weatherCode: Array<Int>
+    var temperature_2m: Array<Double>
+    var wind_speed_10m: Array<Double>
+    var weather_code: Array<Int>
 }
 
 struct WeatherCurrentDataDto:Codable {
@@ -41,12 +41,12 @@ struct WeatherCurrentDataDto:Codable {
 }
 
 struct DailyCurrentDataDto:Codable {
-    var temperature2mMax: Array<Double>
-    var temperature2mMin: Array<Double>
+    var temperature_2m_max: Array<Double>
+    var temperature_2m_min: Array<Double>
     var time: Array<String>
-    var offSetSeconds: Int?
-    var weatherCode: Array<Int>
+    var utc_offset_seconds: Int?
+    var weather_code: Array<Int>
     var sunset:Array<String>
     var sunrise:Array<String>
-    var windDirection10mDominant: Array<Int>
+    var wind_direction_10m_dominant: Array<Int>
 }

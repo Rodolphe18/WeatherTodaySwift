@@ -41,7 +41,7 @@ public class NetworkManager {
     
 func getDailyWeatherData(latitude: Double, longitude: Double) async throws -> WeatherDailyDto
     {
-        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto& daily=weather_code,temperature_2m_max,temperature_2m_min,wind_direction_10m_dominant,sunrise,sunset"
+        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_direction_10m_dominant,sunrise,sunset"
         
         guard let url = URL(string: endPoint) else { throw WeatherApiError.invalidRequest }
         
@@ -51,6 +51,8 @@ func getDailyWeatherData(latitude: Double, longitude: Double) async throws -> We
             throw WeatherApiError.invalidRequest
         }
                 
+    
+        
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .useDefaultKeys
@@ -63,7 +65,7 @@ func getDailyWeatherData(latitude: Double, longitude: Double) async throws -> We
     
 func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> WeatherHourlyDto
     {
-        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto& daily=temperature_2m,weather_code,wind_speed_10m"
+        let endPoint = baseUrl + "/forecast?latitude=\(latitude)&longitude=\(longitude)&timezone=auto&hourly=temperature_2m,weather_code,wind_speed_10m"
         guard let url = URL(string: endPoint) else { throw WeatherApiError.invalidRequest }
         
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -71,7 +73,8 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw WeatherApiError.invalidRequest
         }
-                
+        print(endPoint)
+        print(url)
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .useDefaultKeys
