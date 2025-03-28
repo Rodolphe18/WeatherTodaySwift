@@ -5,7 +5,7 @@
 //  Created by Rodolphe on 28/03/2025.
 //
 class WeatherType {
-
+    static let shared = WeatherType()
 
     func getWeatherType(code:Int) -> Array<String> {
        return switch (code) {

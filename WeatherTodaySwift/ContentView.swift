@@ -20,9 +20,9 @@ struct ContentView: View {
                 Text(String(homeViewModel.hourlyWeather?.hourly.wind_speed_10m[0] ?? 0))
                 Text(String(homeViewModel.hourlyWeather?.hourly.temperature_2m[0] ?? 0.00))
                 Text(homeViewModel.hourlyWeather?.hourly.time[0] ?? "")
-                Text(String(homeViewModel.currentWeather?.current.precipitation ?? 0))
+                Text(WeatherType.shared.getWeatherType(code: homeViewModel.currentWeather?.current.weather_code ?? 0)[0])
                 
-                Image(systemName: "cloud.sun.fill")
+                Image(systemName: WeatherType.shared.getWeatherType(code: homeViewModel.currentWeather?.current.weather_code ?? 0)[1])
                     .symbolRenderingMode(.multicolor)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
