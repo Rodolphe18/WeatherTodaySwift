@@ -36,3 +36,10 @@ struct DailyWeatherData {
     var sunrise:String
 }
 
+struct AutoCompleteData {
+    var placeId:String
+    var latitude:Double
+    var longitude:Double
+    var shortName:String
+    var longName:String
+}

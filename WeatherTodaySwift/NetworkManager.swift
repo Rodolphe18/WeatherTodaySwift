@@ -87,7 +87,7 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
     
     
     
-    func getAutocompleteResult(query:String) async throws -> AutocompleteDto {
+    func getAutocompleteResult(query:String) async throws -> Array<AutocompleteDto> {
       
         let endPoint = autocompleteBaseUrl + "/autocomplete?tag=place:city,place:town?q=\(query)&limit=10&key=pk.2b70389e06988dd76200f790facbca1b"
         guard let url = URL(string: endPoint) else { throw WeatherApiError.invalidRequest }
@@ -101,7 +101,7 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .useDefaultKeys
-            return try decoder.decode(AutocompleteDto.self, from: data)
+            return try decoder.decode(Array<AutocompleteDto>.self, from: data)
         } catch {
                 throw WeatherApiError.invalidResponse
             }
