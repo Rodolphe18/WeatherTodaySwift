@@ -9,58 +9,34 @@ import Foundation
 @MainActor
 final class HomeViewModel : ObservableObject {
     
-    @Published var currentWeather: WeatherCurrentDto?=nil
-    @Published var hourlyWeather: WeatherHourlyDto?=nil
-    @Published var dailyWeather: WeatherDailyDto?=nil
+    var repository = DefaultWeatherRepository()
+    
+    @Published var currentWeather: CurrentWeatherData? = nil
+    @Published var hourlyWeather: Dictionary<Int, Array<HourlyWeatherData>>? = nil
+    @Published var dailyWeather: Array<DailyWeatherData>? = nil
     @Published var isLoading = false
     @Published var isError = false
     
     
     func getCurrentWeather() async throws {
-        
-            isLoading = true
-            
-            do {
-                currentWeather = try await NetworkManager.shared.getCurrentWeatherData(latitude: 48.866667, longitude:2.333333)
-            } catch {
-                isError = true
-                throw WeatherApiError.invalidRequest
-            }
-            
-            
-            isLoading = false
-        }
+        isLoading = true
+        currentWeather = try await repository.getCurrentWeatherData(lat: 48.866667, long:2.333333)
+        isLoading = false
+    }
     
     
     func getDailyWeather() async throws {
-        
-            isLoading = true
-            
-            do {
-                dailyWeather = try await NetworkManager.shared.getDailyWeatherData(latitude: 48.866667, longitude:2.333333)
-            } catch {
-                isError = true
-                throw WeatherApiError.invalidRequest
-            }
-            
-            
-            isLoading = false
-        }
+        isLoading = true
+        dailyWeather = try await repository.getDailyWeatherData(lat: 48.866667, long:2.333333)
+        isLoading = false
+    }
+    
     
     func getHourlyWeather() async throws {
-        
-            isLoading = true
-            
-            do {
-                hourlyWeather = try await NetworkManager.shared.getHourlyWeatherData(latitude: 48.866667, longitude:2.333333)
-            } catch {
-                isError = true
-                throw WeatherApiError.invalidRequest
-            }
-            
-            
-            isLoading = false
-        }
+        isLoading = true
+        hourlyWeather = try await repository.getHourlyWeatherData(lat: 48.866667, long:2.333333)
+        isLoading = false
+    }
     
     
 }
