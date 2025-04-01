@@ -12,7 +12,7 @@ final class HomeViewModel : ObservableObject {
     var repository = DefaultWeatherRepository()
     
     @Published var currentWeather: CurrentWeatherData? = nil
-    @Published var dailyWeather: Array<DailyWeatherData>? = nil
+    @Published var dailyWeather: Array<DailyWeatherData> = []
     @Published var hourlyWeather: Array<HourlyWeatherData> = []
     @Published var isLoading = false
     @Published var isError = false
@@ -21,9 +21,6 @@ final class HomeViewModel : ObservableObject {
     func getCurrentWeather() async throws {
         isLoading = true
         currentWeather = try await repository.getCurrentWeatherData(lat: 48.866667, long:2.333333)
-        
-        
-        
         isLoading = false
     }
     
@@ -31,13 +28,14 @@ final class HomeViewModel : ObservableObject {
     func getDailyWeather() async throws {
         isLoading = true
         dailyWeather = try await repository.getDailyWeatherData(lat: 48.866667, long:2.333333)
+        print(dailyWeather[0].time)
         isLoading = false
     }
     
     
     func getHourlyWeather() async throws {
         isLoading = true
-        let hourlyWeatherResponse:Array<HourlyWeatherData>? = try await repository.getHourlyWeatherData(lat: 48.866667, long:2.333333)
+        let hourlyWeatherResponse:Array<HourlyWeatherData> = try await repository.getHourlyWeatherData(lat: 48.866667, long:2.333333)
         // current date and time
         let date = Date()
         let calendar = Calendar.current
@@ -47,10 +45,13 @@ final class HomeViewModel : ObservableObject {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
+        let offSet = ((hourlyWeatherResponse.first?.offSetSeconds ?? 0) / 3600)
+       
+        for index in 0...48 {
+            if (index >= 24 || calendar.component(.hour, from: dateFormatter.date(from:hourlyWeatherResponse[index].time) ?? Date()) > (hour ?? 0 + offSet)) {
+                hourlyWeather.append(hourlyWeatherResponse[index])
+            }}
         
-        let offSet = ((hourlyWeatherResponse?.first?.offSetSeconds ?? 0) / 3600)
-        
-        hourlyWeather = hourlyWeatherResponse?.filter { calendar.component(.hour, from: dateFormatter.date(from:$0.time) ?? Date()) > (hour ?? 0 + offSet) } ?? []
         
         isLoading = false
     }
