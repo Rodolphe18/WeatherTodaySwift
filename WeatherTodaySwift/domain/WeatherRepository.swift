@@ -11,7 +11,7 @@ class DefaultWeatherRepository {
     
     func getAutoCompleteResult(query:String) async throws -> Array<AutoCompleteData> {
         do {
-            var response = try await NetworkManager.shared.getAutocompleteResult(query: query)
+            let response = try await NetworkManager.shared.getAutocompleteResult(query: query)
             let body = response.map { DataMappers.shared.asExternalAutoCompleteModel(dto: $0) }
             return body
         } catch {
@@ -31,7 +31,7 @@ class DefaultWeatherRepository {
     }
     
     
-    func getHourlyWeatherData(lat: Double,long: Double) async throws -> Dictionary<Int, Array<HourlyWeatherData>> {
+    func getHourlyWeatherData(lat: Double,long: Double) async throws -> Array<HourlyWeatherData> {
         do {
             let response = try await NetworkManager.shared.getHourlyWeatherData(latitude: lat, longitude: long)
             let body = DataMappers.shared.asExternalHourlyWeather(dto: response)

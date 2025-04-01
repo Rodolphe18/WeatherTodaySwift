@@ -17,7 +17,7 @@ struct CurrentWeatherData {
     var precipitation:Double
 }
 
-struct HourlyWeatherData {
+struct HourlyWeatherData:Hashable {
     var time: String
     var offSetSeconds: Int
     var temperatureCelsius: Double
@@ -25,7 +25,7 @@ struct HourlyWeatherData {
     var windSpeed:Double
 }
 
-struct DailyWeatherData {
+struct DailyWeatherData:Hashable {
     var time: String
     var offSetSeconds: Int
     var temperatureMax: Double

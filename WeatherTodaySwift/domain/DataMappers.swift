@@ -21,32 +21,22 @@ class DataMappers {
 
     
     
-    func asExternalHourlyWeather(dto:WeatherHourlyDto) -> Dictionary<Int, Array<HourlyWeatherData>> {
+    func asExternalHourlyWeather(dto:WeatherHourlyDto) -> Array<HourlyWeatherData> {
         
-        var indexedWeatherDataList: Array<IndexedWeatherData> = []
+        var indexedWeatherDataList: Array<HourlyWeatherData> = []
         
-        for index in (0...dto.hourly.time.count) {
-            var time = dto.hourly.time[index]
-            var weatherCode = dto.hourly.weather_code[index]
-            var temperature = dto.hourly.temperature_2m[index]
-            var windSpeed = dto.hourly.wind_speed_10m[index]
-            var offSetSeconds = dto.utc_offset_seconds
+        for index in (0...48) {
+            let time = dto.hourly.time[index]
+            let weatherCode = dto.hourly.weather_code[index]
+            let temperature = dto.hourly.temperature_2m[index]
+            let windSpeed = dto.hourly.wind_speed_10m[index]
+            let offSetSeconds = dto.utc_offset_seconds
             
-            indexedWeatherDataList.append(IndexedWeatherData(index: index, data: HourlyWeatherData(time: time,
-                                                                                                   offSetSeconds: offSetSeconds,
-                                                                                                   temperatureCelsius: temperature,
-                                                                                                   weatherCode: weatherCode,
-                                                                                                   windSpeed: windSpeed)
-            ))
+            indexedWeatherDataList.append(HourlyWeatherData(time: time,offSetSeconds: offSetSeconds,temperatureCelsius: temperature,weatherCode: weatherCode,windSpeed: windSpeed)
+            )
         }
         
-        var map = [Int:Array<HourlyWeatherData>]()
-        for element in indexedWeatherDataList {
-            var index = element.index / 24
-            map[index] = [element.data]
-        }
-        
-        return map
+        return indexedWeatherDataList
     }
     
     
@@ -61,7 +51,7 @@ class DataMappers {
         
         var indexedWeatherDataList: Array<DailyWeatherData> = []
         
-        for index in (0...dto.daily.time.count) {
+        for index in (0...dto.daily.time.count-1) {
             
             let time = dto.daily.time[index]
             let temperatureMax = dto.daily.temperature_2m_max[index]
