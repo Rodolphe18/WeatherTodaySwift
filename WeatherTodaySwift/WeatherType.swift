@@ -9,7 +9,7 @@ class WeatherType {
 
     func getWeatherType(code:Int) -> Array<String> {
        return switch (code) {
-        case 0 : ["Ensoleillé","sun.max"]
+        case 0 : ["Ensoleillé","sun.max.fill"]
         case 1 : ["Quelques nuages","cloud.sun.fill"]
         case 2 : ["Partiellement ensoleillé","cloud.sun.fill"]
         case 3 : ["Couvert","cloud.fill"]

@@ -28,7 +28,6 @@ final class HomeViewModel : ObservableObject {
     func getDailyWeather() async throws {
         isLoading = true
         dailyWeather = try await repository.getDailyWeatherData(lat: 48.866667, long:2.333333)
-        print(dailyWeather[0].time)
         isLoading = false
     }
     
