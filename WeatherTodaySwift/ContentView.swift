@@ -13,26 +13,7 @@ struct ContentView: View {
     
     @StateObject private var homeViewModel = HomeViewModel()
     
-    func HourTimeFormatter(value:String) -> Int {
-        let calendar = Calendar.current
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
-        return calendar.component(.hour, from: dateFormatter.date(from:value) ?? Date())
-    }
     
-    func HourMinuteTimeFormatter(value:String) -> String {
-        let calendar = Calendar.current
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm"
-        return " \(calendar.component(.hour, from: dateFormatter.date(from:value) ?? Date()))h\(calendar.component(.minute, from: dateFormatter.date(from:value) ?? Date()))"
-    }
-    
-    func DayFormatter(value:String) -> String {
-        let calendar = Calendar.current
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return " \(calendar.component(.day, from: dateFormatter.date(from:value) ?? Date()))  \(calendar.component(.month, from: dateFormatter.date(from:value) ?? Date())) "
-    }
     
 
     var body: some View {
@@ -50,49 +31,19 @@ struct ContentView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         ForEach(homeViewModel.hourlyWeather, id: \.self) { hourly in
-                            VStack {
-                                Text(String(HourTimeFormatter(value: hourly.time)) + "h").foregroundColor(.white)
-                                Text(String(hourly.temperatureCelsius)).foregroundColor(.white)
-                                Image(systemName: WeatherType.shared.getWeatherType(code: hourly.weatherCode)[1])
-                                                                .symbolRenderingMode(.multicolor)
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fit)
-                                                                .frame(width: 30, height: 30)
-                            }.frame(width: 60, height: 60, alignment: .center)
-                            
+                            HourlyItemView(time: hourly.time, temperature: hourly.temperatureCelsius, weatherCode: hourly.weatherCode)
                         }
                     }.frame(height: 100)
                 }
-                Text("Données météorogiques").frame(alignment: .leading).font(Font.title).foregroundColor(.white)
-                VStack {
-                    HStack {
-                        VStack {
-                            Text("Ressenti").foregroundColor(.white)
-                            Text(String(homeViewModel.currentWeather?.apparentTemperature ?? 0.00)).foregroundColor(.white)
-                            Text("Vitesse du vent").foregroundColor(.white)
-                            Text(String(Int(homeViewModel.currentWeather?.windSpeed ?? 0.00)) + " km/h").foregroundColor(.white)
-                            Text("Lever du soleil").foregroundColor(.white)
-                            Text(HourMinuteTimeFormatter(value:homeViewModel.dailyWeather.first?.sunrise ?? "")).foregroundColor(.white)
-                        }
-                        Spacer().frame(width: 50)
-                        VStack {
-                            Text("Direction du vent").foregroundColor(.white)
-                            Text(String(homeViewModel.currentWeather?.windDirection ?? 0)).foregroundColor(.white)
-                            Text("Précipitation").foregroundColor(.white)
-                            Text(String(homeViewModel.currentWeather?.precipitation ?? 0.00)).foregroundColor(.white)
-                            Text("Coucher du soleil").foregroundColor(.white)
-                            Text(HourMinuteTimeFormatter(value: homeViewModel.dailyWeather.first?.sunset ?? "")).foregroundColor(.white)
-                        }
-                    }
-                }.frame(height: 160)
-                Text("Dans les jours à venir")
-                    .frame(alignment: .leading)
-                    //.font(Font.title).foregroundColor(.white)
+                Spacer(minLength: 8)
+                Text("Données météorologiques").frame(alignment: .leading).font(Font.title).foregroundColor(.white)
+                CurrentWeatherMetaData(apparentTemperature: homeViewModel.currentWeather?.apparentTemperature ?? 0.00, windSpeed: homeViewModel.currentWeather?.windSpeed ?? 0, sunrise: homeViewModel.dailyWeather.first?.sunrise ?? "", windDirection: homeViewModel.currentWeather?.windDirection ?? 0, precipitation: homeViewModel.currentWeather?.precipitation ?? 0.00, sunset: homeViewModel.dailyWeather.first?.sunset ?? "")
+                Text("Dans les jours à venir").frame(alignment: .leading).font(Font.title).foregroundColor(.white)
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         ForEach(homeViewModel.dailyWeather, id: \.self) { daily in
                             VStack {
-                                Text(String(DayFormatter(value: daily.time))).foregroundColor(.white)
+                                Text(String(DateTimeFormatter.shared.dayFormatter(value: daily.time))).foregroundColor(.white)
                                 Text(String(daily.temperatureMax)).foregroundColor(.white)
                                 Image(systemName: WeatherType.shared.getWeatherType(code: daily.weatherCode)[1])
                                                                 .symbolRenderingMode(.multicolor)
@@ -126,4 +77,56 @@ struct ContentView: View {
         }
     }
 
+
+struct HourlyItemView : View {
+    
+    var time: String
+    var temperature: Double
+    var weatherCode: Int
+    
+    var body:some View {
+        VStack {
+            Text(String(DateTimeFormatter.shared.hourTimeFormatter(value: time)) + "h").foregroundColor(.white)
+            Text(String(temperature)).foregroundColor(.white)
+            Image(systemName: WeatherType.shared.getWeatherType(code: weatherCode)[1])
+                .symbolRenderingMode(.multicolor)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 30, height: 30)
+        }.frame(width: 60, height: 100, alignment: .center).background(.pink).clipShape(.buttonBorder)
+    }
+}
+                            
+struct CurrentWeatherMetaData:View {
+    
+    var apparentTemperature:Double
+    var windSpeed:Double
+    var sunrise:String
+    var windDirection:Int
+    var precipitation:Double
+    var sunset:String
+    
+   
+    var body:some View {
+        HStack() {
+            VStack {
+                Text("Ressenti").foregroundColor(.white)
+                Text(String(apparentTemperature)).foregroundColor(.white)
+                Text("Vitesse du vent").foregroundColor(.white)
+                Text(String(Int(windSpeed)) + " km/h").foregroundColor(.white)
+                Text("Lever du soleil").foregroundColor(.white)
+                Text(DateTimeFormatter.shared.hourMinuteTimeFormatter(value:sunrise)).foregroundColor(.white)
+            }
+            Spacer().frame(width: 50)
+            VStack {
+                Text("Direction du vent").foregroundColor(.white)
+                Text(String(windDirection)).foregroundColor(.white)
+                Text("Précipitation").foregroundColor(.white)
+                Text(String(precipitation)).foregroundColor(.white)
+                Text("Coucher du soleil").foregroundColor(.white)
+                Text(DateTimeFormatter.shared.hourMinuteTimeFormatter(value: sunset)).foregroundColor(.white)
+            }
+        }.frame(height: 160)
+    }
+}
 
