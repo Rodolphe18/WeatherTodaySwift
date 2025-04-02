@@ -28,7 +28,7 @@ class DateTimeFormatter {
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        return " \(calendar.component(.day, from: dateFormatter.date(from:value) ?? Date()))  \(calendar.component(.month, from: dateFormatter.date(from:value) ?? Date())) "
+        return "\(calendar.component(.day, from: dateFormatter.date(from:value) ?? Date()))/\(calendar.component(.month, from: dateFormatter.date(from:value) ?? Date()))"
     }
     
 }
