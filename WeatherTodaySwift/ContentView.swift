@@ -22,8 +22,7 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 70, height: 70)
-                Text(String(homeViewModel.currentWeather?.temperatureCelsius ?? 0.00) + "°C").font(.system(size: 32, weight: .medium, design: .default)).foregroundColor(.white)
-                Spacer(minLength: 4)
+                Text(String(homeViewModel.currentWeather?.temperatureCelsius ?? 0.00) + "°C").font(.system(size: 28, weight: .medium, design: .default)).foregroundColor(.white)
                 Text("Dans les prochaines heures").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding()
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
@@ -82,7 +81,7 @@ struct HourlyItemView : View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 30, height: 30)
-        }.frame(width: 60, height: 90, alignment: .center).background(.pink).clipShape(.rect(cornerRadius: 8))
+        }.frame(width: 60, height: 90, alignment: .center).background(.lightBlue).clipShape(.rect(cornerRadius: 8))
     }
 }
 
