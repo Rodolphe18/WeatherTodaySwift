@@ -11,9 +11,10 @@ import MapKit
 
 struct SearchScreen: View {
     
+    @Environment(\.modelContext) var context
     @State var query:String = ""
     @StateObject var vm = SearchViewModel()
-    @State var cities = Array<PersistedCity>()
+    @Query var cities: [PersistedCity] = []
     
     var body: some View {
         
@@ -24,12 +25,15 @@ struct SearchScreen: View {
                 ForEach(vm.autoCompletionResult, id: \.self) { result in
                     Text(result.longName).onTapGesture {
                         query = ""
-                        cities.append(PersistedCity(name: result.shortName, latitude: result.latitude, longitude: result.longitude))
+                        context.insert(PersistedCity(name: result.shortName, latitude: result.latitude, longitude: result.longitude))
                     }
                 }
             }
             
             .navigationTitle("Gérer les villes")
+            .navigationDestination(for: PersistedCity.self) { city in
+                HomeScreen(city: city)
+            }
             .navigationBarTitleDisplayMode(.large)
             .searchable(text: $query)
             .onChange(of: query) {
@@ -37,10 +41,12 @@ struct SearchScreen: View {
                     await vm.getAutoCompleteSearch(query: query)
                 }}
             .overlay {
-                if(!cities.isEmpty && query.isEmpty) {
+                if(query.isEmpty) {
                     List {
                         ForEach(cities, id: \.self) { city in
-                            Text(city.name)
+                            NavigationLink(value: city) {
+                                Text(city.name)
+                            }
                         }
                     }
                 }

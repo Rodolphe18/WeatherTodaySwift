@@ -49,6 +49,7 @@ struct AutoCompleteData:Hashable {
 
 @Model
 class PersistedCity {
+    var id:UUID = UUID()
     var name:String
     var latitude:Double
     var longitude:Double

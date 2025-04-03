@@ -8,9 +8,11 @@
 import Foundation
 import SwiftUI
 
-struct ContentView: View {
+struct HomeScreen: View {
     
     @StateObject private var homeViewModel = HomeViewModel()
+    
+    var city:PersistedCity
     
     var body: some View {
         ZStack() {
@@ -45,19 +47,19 @@ struct ContentView: View {
             }
         }.task {
                 do {
-                    try await homeViewModel.getCurrentWeather()
+                    try await homeViewModel.getCurrentWeather(latitude: city.latitude, longitude: city.longitude)
                 } catch{
                     
                 }
         }.task {
                 do {
-                    try await homeViewModel.getDailyWeather()
+                    try await homeViewModel.getDailyWeather(latitude: city.latitude, longitude: city.longitude)
                 } catch{
                     
                 }
         }.task {
                 do {
-                    try await homeViewModel.getHourlyWeather()
+                    try await homeViewModel.getHourlyWeather(latitude: city.latitude, longitude: city.longitude)
                 } catch{
                     
                 }

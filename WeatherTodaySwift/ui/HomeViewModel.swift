@@ -18,23 +18,23 @@ final class HomeViewModel : ObservableObject {
     @Published var isError = false
     
     
-    func getCurrentWeather() async throws {
+    func getCurrentWeather(latitude:Double, longitude:Double) async throws {
         isLoading = true
-        currentWeather = try await repository.getCurrentWeatherData(lat: 48.866667, long:2.333333)
+        currentWeather = try await repository.getCurrentWeatherData(lat: latitude, long:longitude)
         isLoading = false
     }
     
     
-    func getDailyWeather() async throws {
+    func getDailyWeather(latitude:Double, longitude:Double) async throws {
         isLoading = true
-        dailyWeather = try await repository.getDailyWeatherData(lat: 48.866667, long:2.333333)
+        dailyWeather = try await repository.getDailyWeatherData(lat: latitude, long:longitude)
         isLoading = false
     }
     
     
-    func getHourlyWeather() async throws {
+    func getHourlyWeather(latitude:Double, longitude:Double) async throws {
         isLoading = true
-        let hourlyWeatherResponse:Array<HourlyWeatherData> = try await repository.getHourlyWeatherData(lat: 48.866667, long:2.333333)
+        let hourlyWeatherResponse:Array<HourlyWeatherData> = try await repository.getHourlyWeatherData(lat: latitude, long:longitude)
         // current date and time
         let date = Date()
         let calendar = Calendar.current
