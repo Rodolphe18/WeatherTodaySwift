@@ -15,12 +15,11 @@ struct SearchScreen: View {
     @State var query:String = ""
     @StateObject var vm = SearchViewModel()
     @Query var cities: [PersistedCity] = []
+   
     
     var body: some View {
-        
-        
+        @State var selectedCity:PersistedCity? = cities[0]
         NavigationStack {
-            
             List {
                 ForEach(vm.autoCompletionResult, id: \.self) { result in
                     Text(result.longName).onTapGesture {
@@ -29,10 +28,9 @@ struct SearchScreen: View {
                     }
                 }
             }
-            
             .navigationTitle("Gérer les villes")
-            .navigationDestination(for: PersistedCity.self) { city in
-                HomeScreen(city: city)
+            .navigationDestination(for: Int.self) { index in
+                Pager(index: index)
             }
             .navigationBarTitleDisplayMode(.large)
             .searchable(text: $query)
@@ -43,94 +41,17 @@ struct SearchScreen: View {
             .overlay {
                 if(query.isEmpty) {
                     List {
-                        ForEach(cities, id: \.self) { city in
-                            NavigationLink(value: city) {
-                                Text(city.name)
+                ForEach(Array(zip(cities.indices, cities)), id: \.0) { index, city in
+                            NavigationLink(value: index) {
+                                HStack{
+                                    Text(city.name)
+                                    Text(String(index))
+                                }
                             }
                         }
                     }
                 }
             }
-    }
-}
-    
-    
-}
-
-
-
-@Observable
-class LocationSearchService:NSObject {
-    
-    
-    var query:String = "" {
-        didSet {
-            handleSearchFragment(query)
         }
     }
-    
-    var results: [LocationResult] = []
-    var status: SearchStatus = .idle
-    var completer:MKLocalSearchCompleter
-    
-    init(filter: MKPointOfInterestFilter = .excludingAll, region: MKCoordinateRegion = MKCoordinateRegion(.world), types: MKLocalSearchCompleter.ResultType = [.query, .address]) {
-        
-        completer = MKLocalSearchCompleter()
-        
-        super.init()
-        completer.delegate = self
-        completer.pointOfInterestFilter = filter
-        completer.region = region
-        completer.resultTypes = types
-    }
-    
-    private func handleSearchFragment(_ fragment: String) {
-        self.status = .searching
-        if !fragment.isEmpty {
-            self.completer.queryFragment = fragment
-        }
-        self.status = .idle
-        self.results = []
-        
-        
-    }
 }
-    
-    
-extension LocationSearchService: MKLocalSearchCompleterDelegate {
-    
-    
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-       // self.results = completer.results.map(
-         //   { result in
-              //  LocationResult(title: result.title, subtitle:result.subtitle)
-         //   }
-       // )
-        self.status = .result
-    }
- 
-    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: any Error) {
-        self.status = .error(error.localizedDescription)
-    }
-    
-    
-}
-    
-
-struct LocationResult:Identifiable, Hashable {
-    var id = UUID()
-    var title:String
-    var subtitle:String
-    var latitude:Double
-    var longitude:Double
-}
-
-
-enum SearchStatus:Equatable {
-    case idle
-    case searching
-    case error(String)
-    case result
-}
-
-

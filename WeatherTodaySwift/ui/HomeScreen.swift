@@ -7,6 +7,26 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
+
+
+struct Pager:View {
+    
+    @Query var cities: [PersistedCity] = []
+    
+    @State var index = 0
+    
+    var body: some View {
+        TabView(selection:$index) {
+            ForEach(cities.indices) { indice in
+                HomeScreen(city: cities[indice]).tag(indice)
+            }
+        }
+        .tabViewStyle(.page)
+    }
+    
+}
+
 
 struct HomeScreen: View {
     
@@ -16,16 +36,12 @@ struct HomeScreen: View {
     
     var body: some View {
         ZStack() {
-            LinearGradient(gradient: Gradient(colors:[.blue, .cyan]), startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea()
+            LinearGradient(gradient: Gradient(colors:[.blue, .cyan]), startPoint: .topLeading, endPoint: .bottomTrailing)
             VStack() {
+                Text(city.name).font(.system(size: 36, weight: .medium, design: .default)).foregroundColor(.white).padding(.top,-30)
                 Text(WeatherType.shared.getWeatherType(code: homeViewModel.currentWeather?.weatherCode ?? 0)[0]).font(.system(size: 32, weight: .medium, design: .default)).foregroundColor(.white)
-                Image(systemName: WeatherType.shared.getWeatherType(code: homeViewModel.currentWeather?.weatherCode ?? 0)[1])
-                    .symbolRenderingMode(.multicolor)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70, height: 70)
-                Text(String(homeViewModel.currentWeather?.temperatureCelsius ?? 0.00) + "°C").font(.system(size: 28, weight: .medium, design: .default)).foregroundColor(.white)
-                Text("Dans les prochaines heures").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding()
+                Text(String(homeViewModel.currentWeather?.temperatureCelsius ?? 0.00) + "°C").font(.system(size: 46, weight: .medium, design: .default)).foregroundColor(.white).padding(.bottom, 8)
+                Text("Dans les prochaines heures").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding(.horizontal)
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         ForEach(homeViewModel.hourlyWeather, id: \.self) { hourly in
@@ -33,10 +49,9 @@ struct HomeScreen: View {
                         }
                     }.frame(height: 90).padding(.horizontal)
                 }
-                Spacer(minLength: 4)
-                Text("Données météorologiques").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding()
+                Text("Données météorologiques").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding(.horizontal)
                 CurrentWeatherMetaData(apparentTemperature: homeViewModel.currentWeather?.apparentTemperature ?? 0.00, windSpeed: homeViewModel.currentWeather?.windSpeed ?? 0, sunrise: homeViewModel.dailyWeather.first?.sunrise ?? "", windDirection: homeViewModel.currentWeather?.windDirection ?? 0, precipitation: homeViewModel.currentWeather?.precipitation ?? 0.00, sunset: homeViewModel.dailyWeather.first?.sunset ?? "")
-                Text("Dans les jours à venir").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding()
+                Text("Dans les jours à venir").frame(maxWidth: .infinity, alignment: .leading).font(Font.title).foregroundColor(.white).padding(.horizontal)
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack {
                         ForEach(homeViewModel.dailyWeather, id: \.self) { daily in

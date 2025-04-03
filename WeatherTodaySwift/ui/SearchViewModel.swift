@@ -13,6 +13,8 @@ class SearchViewModel:ObservableObject {
     
     var autoCompletionResult:Array<AutoCompleteData> = []
     
+    
+    
     func getAutoCompleteSearch(query: String) async {
         autoCompletionResult.removeAll()
         
