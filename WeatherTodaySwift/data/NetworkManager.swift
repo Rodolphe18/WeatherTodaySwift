@@ -73,8 +73,6 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw WeatherApiError.invalidRequest
         }
-        print(endPoint)
-        print(url)
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .useDefaultKeys
@@ -89,7 +87,7 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
     
     func getAutocompleteResult(query:String) async throws -> Array<AutocompleteDto> {
       
-        let endPoint = autocompleteBaseUrl + "/autocomplete?tag=place:city,place:town?q=\(query)&limit=10&key=pk.2b70389e06988dd76200f790facbca1b"
+        let endPoint = autocompleteBaseUrl + "/autocomplete?tag=place:city,place:town&q=\(query)&limit=10&key=pk.2b70389e06988dd76200f790facbca1b"
         guard let url = URL(string: endPoint) else { throw WeatherApiError.invalidRequest }
         
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -97,6 +95,9 @@ func getHourlyWeatherData(latitude: Double, longitude: Double) async throws -> W
         guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             throw WeatherApiError.invalidRequest
         }
+        
+        print(endPoint)
+        print(url)
                 
         do {
             let decoder = JSONDecoder()

@@ -4,6 +4,8 @@
 //
 //  Created by Rodolphe on 28/03/2025.
 //
+import SwiftData
+import Foundation
 
 struct CurrentWeatherData {
     var time: String
@@ -36,10 +38,29 @@ struct DailyWeatherData:Hashable {
     var sunrise:String
 }
 
-struct AutoCompleteData {
+struct AutoCompleteData:Hashable {
     var placeId:String
     var latitude:Double
     var longitude:Double
     var shortName:String
     var longName:String
+}
+
+
+@Model
+class PersistedCity {
+    var name:String
+    var latitude:Double
+    var longitude:Double
+    
+    
+    init(name: String, latitude: Double, longitude: Double) {
+        self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+    
+    
+    
+    
 }

@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct WeatherTodaySwiftApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SearchScreen()
         }
+        .modelContainer(for: [PersistedCity.self])
     }
 }
